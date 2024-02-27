@@ -42,3 +42,21 @@ class RandomLogic(BaseLogic):
                     self.directions
                 )
         return delta_x, delta_y
+
+    def getClosestDiamondPos(self,board:Board, me : GameObject):
+        temp = []
+        for i in range(len(board.game_objects)):
+            if(board.game_objects[i].type == "DiamondGameObject"):
+                temp.append(board.game_objects[i])
+
+        closestPos : GameObject.position
+        closestDist = 99999
+
+        for i in range(len(temp)):
+            if(self.countDistance(me.position,temp[i].position) < closestDist):
+                closestDist = self.countDistance(me.position,temp[i].position)
+                closestPos = temp[i].position
+            print(self.countDistance(me.position,temp[i].position) + "GameObj")
+        
+
+        return closestPos

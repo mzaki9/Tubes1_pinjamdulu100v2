@@ -8,7 +8,7 @@ from game.bot_handler import BotHandler
 from game.logic.random import RandomLogic
 from game.util import *
 from game.logic.base import BaseLogic
-from game.logic.mybot2 import MyBot
+from game.logic.mybot3 import MyBot
 
 init()
 BASE_URL = "http://localhost:3000/api"
