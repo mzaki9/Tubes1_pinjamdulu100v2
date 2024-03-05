@@ -100,15 +100,111 @@ class MyBot(BaseLogic):
     def isCloseBase(self, a:Position,b:Position):
         if(self.countDistance(a,b) <= 8):
             return True
+    
+    def isHomeWithPortal(self,board:Board , me : GameObject):
+        base = me.properties.base
+        usPos = me.position
+        temp = []
+        for i in range(len(board.game_objects)):
+            if(board.game_objects[i].type == "TeleportGameObject"):
+                 temp.append(board.game_objects[i])
+        
+        if(self.countDistance(me.position,temp[0].position) > self.countDistance(me.position,temp[1].position)):
+            tPos1 = temp[1].position
+            tGo1 = temp[1]
+            tPos2 = temp[0].position
+            tGo2 = temp[0]
+        else:
+            tPos1 = temp[0].position
+            tGo1 = temp[0]
+            tPos2 = temp[1].position
+            tGo2 = temp[1]
+        #tPos1 itu selalu posisi teleporter yang paling dekat sama botplayer
+        j_us_to_tPos1 = self.countDistance(usPos,tPos1)
+        j_tPos2_to_base = self.countDistance(tPos2,base)
+        j_us_to_base = self.countDistance(usPos,base)
 
+        if(j_us_to_tPos1 + j_tPos2_to_base < j_us_to_base):
+            return True
+        else:
+            return False
+        
+        
+    def isBetterPortalDiamond(self,usPos : Position,board:Board,me : GameObject):
+        temp = []
+        for i in range(len(board.game_objects)):
+            if(board.game_objects[i].type == "TeleportGameObject"):
+                 temp.append(board.game_objects[i])
+        
+        if(self.countDistance(me.position,temp[0].position) > self.countDistance(me.position,temp[1].position)):
+            tPos1 = temp[1].position
+            tGo1 = temp[1]
+            tPos2 = temp[0].position
+            tGo2 = temp[0]
+        else:
+            tPos1 = temp[0].position
+            tGo1 = temp[0]
+            tPos2 = temp[1].position
+            tGo2 = temp[1]
 
+        dPos = self.getClosestDiamondPos(board,me)
+        dPos2 = self.getClosestDiamondPos(board,tGo2)
+        #Kalau jarak kita ke diamond lebih deket via portal
+        j_Us_to_tPos1 = self.countDistance(usPos,tPos1)
+        j_Us_to_tpos2 = self.countDistance(usPos,tPos2)
+        j_Us_to_dPos = self.countDistance(usPos,dPos)
+        j_tPos2_to_dPos2 = self.countDistance(tPos2,dPos2)
 
+        jTot = j_Us_to_tPos1 + j_tPos2_to_dPos2
 
+        if(self.countDistance(usPos,dPos) > jTot):
+            return True
+        else:
+            return False
+        
+    def checkSurrounding(self,nextPosition : Position,mePosition:Position,board:Board):
+        temp = []
+        for i in range(len(board.game_objects)):
+            if(board.game_objects[i].type == "TeleportGameObject"):
+                temp.append(board.game_objects[i])
 
+        if(nextPosition.x -1 == mePosition.x and nextPosition.y == mePosition.y and (nextPosition.x == temp[0].position.x and nextPosition.y == temp[0].position.y) or (nextPosition.x == temp[1].position.x and nextPosition.y == temp[1].position.y)):
+            return "West"
+        elif(nextPosition.x +1 == mePosition.x and nextPosition.y == mePosition.y and (nextPosition.x == temp[0].position.x and nextPosition.y == temp[0].position.y) or (nextPosition.x == temp[1].position.x and nextPosition.y == temp[1].position.y)):
+            return "East"
+        elif(nextPosition.x == mePosition.x and nextPosition.y -1 == mePosition.y and (nextPosition.x == temp[0].position.x and nextPosition.y == temp[0].position.y) or (nextPosition.x == temp[1].position.x and nextPosition.y == temp[1].position.y)):
+            return "North"
+        elif(nextPosition.x == mePosition.x and nextPosition.y +1 == mePosition.y and (nextPosition.x == temp[0].position.x and nextPosition.y == temp[0].position.y) or (nextPosition.x == temp[1].position.x and nextPosition.y == temp[1].position.y)):
+            return "South"
+        else:
+            return "None"
 
+    
+    def avoidTeleport(self,board:Board,position : Position,currentPos:Position):
+        temp = []
+        print("Ada teleporter ngalangin")
+        for i in range(len(board.game_objects)):
+            if(board.game_objects[i].type == "TeleportGameObject"):
+                temp.append(board.game_objects[i])
+
+        direction = self.checkSurrounding(position,currentPos,board)
+        if (direction == "West"):
+            return (currentPos.x ,currentPos.y + 1)
+        elif (direction == "East"):
+            return (currentPos.x ,currentPos.y + 1)
+        elif (direction == "North"):
+            return (currentPos.x + 1 ,currentPos.y)
+        elif (direction == "South"):
+            return (currentPos.x - 1 ,currentPos.y)
+        else:
+            return position
+        
+
+            
     def next_move(self, board_bot: GameObject, board: Board):
         usPos = board_bot.position
         base = board_bot.properties.base
+        tPos1 = self.getClosestTeleportPos(board,board_bot)
         time = (math.floor(board_bot.properties.milliseconds_left / 1000))
         print("waktu" , time)
         print("Jarak ke base " , self.countDistance(usPos,base))
@@ -120,8 +216,14 @@ class MyBot(BaseLogic):
             redPos = self.getClosestRedPos(board,board_bot)
         if (time >= 15):
             if(board_bot.properties.diamonds == 5):
-                delta_x,delta_y = self.goTo(usPos,base)
                 print("Balik ke base (5)")
+                if(self.isHomeWithPortal(board,board_bot)):
+                    print("Lewat portal lebih cepat")
+                    delta_x, delta_y = self.goTo(usPos,tPos1)
+                else:
+                    print("Langsung tanpa portal")
+                    nextPos = delta_x, delta_y = self.goTo(usPos,base)
+                    delta_x,delta_y = self.avoidTeleport(board,nextPos,usPos)
 
                 #PROTOKOL MAIN AMAN DEKET BASE============
             elif(board_bot.properties.diamonds >= 3 and self.isCloseBase(usPos,base)) :
@@ -134,15 +236,29 @@ class MyBot(BaseLogic):
                         delta_x , delta_y = self.goTo(usPos,bluePos)
                     else:
                         print("Deket base dan ada diamond di invent")
-                        delta_x, delta_y = self.goTo(usPos,base)
+                        if(self.isHomeWithPortal(board,board_bot)):
+                            print("Lewat portal lebih cepat")
+                            delta_x, delta_y = self.goTo(usPos,tPos1)
+                        else:
+                            print("Langsung tanpa portal")
+                            delta_x, delta_y = self.goTo(usPos,base)
                 else:
                     print("Deket base dan ada diamond di invent")
-                    delta_x, delta_y = self.goTo(usPos,base)
+                    if(self.isHomeWithPortal(board,board_bot)):
+                        print("Lewat portal lebih cepat")
+                        delta_x, delta_y = self.goTo(usPos,tPos1)
+                    else:
+                        print("Langsung tanpa portal")
+                        nextPos = delta_x, delta_y = self.goTo(usPos,base)
+                        delta_x,delta_y = self.avoidTeleport(board,nextPos,usPos)
 
                 #PROTOKOL GAREP DIAMOND BANYAK======= 
             elif(board_bot.properties.diamonds <= 3):
                 if(self.isDiamondAvailable(board) and self.isRedAvailable(board)):
-                    if (self.countDistance(usPos,bluePos) < self.countDistance   (usPos,redPos)):
+                    if(self.isBetterPortalDiamond(usPos,board,board_bot)):
+                        print("Via portal lebih bagus!")
+                        delta_x,delta_y = self.goTo(usPos,tPos1)
+                    elif (self.countDistance(usPos,bluePos) < self.countDistance   (usPos,redPos)):
                         delta_x , delta_y = self.goTo(usPos,bluePos)
                         print("Prior Biru")
                     else:
@@ -159,12 +275,24 @@ class MyBot(BaseLogic):
                     delta_x , delta_y = self.goTo(usPos,bluePos) 
                     print("Diamond ada 4 paksa ambil biru")    
                 else:
-                    delta_x,delta_y = self.goTo(usPos,base)
                     print("Diamond ada 4 tapi gk ada biru,balik") 
+                    if(self.isHomeWithPortal(board,board_bot)):
+                        print("Lewat portal lebih cepat")
+                        delta_x, delta_y = self.goTo(usPos,tPos1)
+                    else:
+                        print("Langsung tanpa portal")
+                        nextPos = delta_x, delta_y = self.goTo(usPos,base)
+                        delta_x,delta_y = self.avoidTeleport(board,nextPos,usPos)
         else:
             if(board_bot.properties.diamonds > 0):
-                delta_x , delta_y = self.goTo(usPos,base)
                 print("Waktu dikit dan ada diamond,balik ke base")
+                if(self.isHomeWithPortal(board,board_bot)):
+                    print("Lewat portal lebih cepat")
+                    delta_x, delta_y = self.goTo(usPos,tPos1)
+                else:
+                    print("Langsung tanpa portal")
+                    nextPos = delta_x, delta_y = self.goTo(usPos,base)
+                    delta_x,delta_y = self.avoidTeleport(board,nextPos,usPos)
             else:
                 if(self.isDiamondAvailable(board) and self.isRedAvailable(board)):
                     if (self.countDistance(usPos,bluePos) < self.countDistance   (usPos,redPos)):

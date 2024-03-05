@@ -8,14 +8,19 @@ from game.bot_handler import BotHandler
 from game.logic.random import RandomLogic
 from game.util import *
 from game.logic.base import BaseLogic
-from game.logic.mybot3 import MyBot
+from game.logic.wow import MyBot
+from game.logic.killer import KillerBot
+from game.logic.trollbot import TrollBot
+
 
 init()
 BASE_URL = "http://localhost:3000/api"
 DEFAULT_BOARD_ID = 1
 CONTROLLERS = {
     "Random": RandomLogic,
-    "MyBot" : MyBot
+    "MyBot" : MyBot,
+    "KillerBot" : KillerBot,
+    "TrollBot" : TrollBot,
 }
 
 ###############################################################################
