@@ -160,24 +160,22 @@ class MyBot(BaseLogic):
             return True
         else:
             return False
-        
-    def checkSurrounding(self,nextPosition : Position,mePosition:Position,board:Board):
-        temp = []
-        for i in range(len(board.game_objects)):
-            if(board.game_objects[i].type == "TeleportGameObject"):
-                temp.append(board.game_objects[i])  
-        print(nextPosition.x,nextPosition.y)
-
-        if(nextPosition.x -1 == mePosition.x and nextPosition.y == mePosition.y and ((nextPosition.x == temp[0].position.x and nextPosition.y == temp[0].position.y) or (nextPosition.x == temp[1].position.x and nextPosition.y == temp[1].position.y))):
-            return "West"
-        elif(nextPosition.x +1 == mePosition.x and nextPosition.y == mePosition.y and ((nextPosition.x == temp[0].position.x and nextPosition.y == temp[0].position.y) or (nextPosition.x == temp[1].position.x and nextPosition.y == temp[1].position.y))):
-            return "East"
-        elif(nextPosition.x == mePosition.x and nextPosition.y -1 == mePosition.y and ((nextPosition.x == temp[0].position.x and nextPosition.y == temp[0].position.y) or (nextPosition.x == temp[1].position.x and nextPosition.y == temp[1].position.y))):
-            return "North"
-        elif(nextPosition.x == mePosition.x and nextPosition.y +1 == mePosition.y and ((nextPosition.x == temp[0].position.x and nextPosition.y == temp[0].position.y) or (nextPosition.x == temp[1].position.x and nextPosition.y == temp[1].position.y))):
-            return "South"
-        else:
-            return "None"
+                
+    def checkDiamondReset(self,mePosition:Position,board:Board):
+            temp = []
+            for i in range(len(board.game_objects)):
+                if(board.game_objects[i].type == "DiamondButtonGameObject"):
+                    temp.append(board.game_objects[i])  
+            if(mePosition.x + 1 == temp[0].position.x and mePosition.y == temp[0].position.y):
+                return temp[0].position
+            elif(mePosition.x - 1 == temp[0].position.x and mePosition.y == temp[0].position.y):
+                return temp[0].position
+            elif(mePosition.x == temp[0].position.x and mePosition.y + 1 == temp[0].position.y):
+                return temp[0].position
+            elif(mePosition.x == temp[0].position.x and mePosition.y - 1 == temp[0].position.y):
+                return temp[0].position
+            else:
+                return mePosition
 
     
     def avoidTeleport(self,board:Board,position : Position,currentPos:Position):
@@ -212,6 +210,7 @@ class MyBot(BaseLogic):
         
         base = board_bot.properties.base
         tPos1 = self.getClosestTeleportPos(board,board_bot)
+        positionButton = self.checkDiamondReset(usPos,board)
         time = (math.floor(board_bot.properties.milliseconds_left / 1000))
         print("waktu" , time)
         print("Jarak ke base " , self.countDistance(usPos,base))
@@ -221,6 +220,11 @@ class MyBot(BaseLogic):
          
         if(self.isRedAvailable(board)):
             redPos = self.getClosestRedPos(board,board_bot)
+
+        if(positionButton != usPos):
+
+            delta_x,delta_y = self.goTo(usPos,positionButton)
+        
         if (time >= 15):
             if(board_bot.properties.diamonds == 5):
                 print("Balik ke base (5)")
@@ -228,16 +232,7 @@ class MyBot(BaseLogic):
                     print("Lewat portal lebih cepat")
                     delta_x, delta_y = self.goTo(usPos,tPos1)
                 else:
-                    print("Langsung tanpa portal")
-                    # x,y= self.goTo(usPos,base)
-                    # print("Akhir Uspos1" , usPos)
-                    # print("Real Pos1" , board_bot.position)
-                    # nextPos.x = tempUsPos.x + x
-                    # nextPos.y = tempUsPos.y + y
-                    # print("Akhir Uspos2" , usPos)
-                    # print("Real Pos2" , board_bot.position)
-                    # delta_x,delta_y = self.goTo(usPos,self.avoidTeleport(board,nextPos,usPos))
-                    # print("delta_x " , delta_x, "delta_y" , delta_y)
+                    print("Langsung tanpa portal")  
                     delta_x,delta_y = self.goTo(usPos,base)
                     
                     
@@ -266,15 +261,6 @@ class MyBot(BaseLogic):
                         delta_x, delta_y = self.goTo(usPos,tPos1)
                     else:
                         print("Langsung tanpa portal")
-                        # x,y= self.goTo(usPos,base)
-                        # # print("Akhir Uspos1" , usPos)
-                        # # print("Real Pos1" , board_bot.position)
-                        # # nextPos.x = tempUsPos.x + x
-                        # # nextPos.y = tempUsPos.y + y
-                        # # print("Akhir Uspos2" , usPos)
-                        # # print("Real Pos2" , board_bot.position)
-                        # delta_x,delta_y = self.goTo(usPos,self.avoidTeleport(board,nextPos,usPos))
-                        # print("delta_x " , delta_x, "delta_y" , delta_y)
                         delta_x,delta_y = self.goTo(usPos,base)
                   
                         
@@ -311,15 +297,6 @@ class MyBot(BaseLogic):
                         delta_x, delta_y = self.goTo(usPos,tPos1)
                     else:
                         print("Langsung tanpa portal")
-                        # x,y= self.goTo(usPos,base)
-                        # print("Akhir Uspos1" , usPos)
-                        # print("Real Pos1" , board_bot.position)
-                        # nextPos.x = tempUsPos.x + x
-                        # nextPos.y = tempUsPos.y + y
-                        # print("Akhir Uspos2" , usPos)
-                        # print("Real Pos2" , board_bot.position)
-                        # delta_x,delta_y = self.goTo(usPos,self.avoidTeleport(board,nextPos,usPos))
-                        # print("delta_x " , delta_x, "delta_y" , delta_y)
                         delta_x,delta_y = self.goTo(usPos,base)
                         
         else:
@@ -330,15 +307,6 @@ class MyBot(BaseLogic):
                     delta_x, delta_y = self.goTo(usPos,tPos1)
                 else:
                     print("Langsung tanpa portal")
-                    # x,y= self.goTo(usPos,base)
-                    # print("Akhir Uspos1" , usPos)
-                    # print("Real Pos1" , board_bot.position)
-                    # nextPos.x = tempUsPos.x + x
-                    # nextPos.y = tempUsPos.y + y
-                    # print("Akhir Uspos2" , usPos)
-                    # print("Real Pos2" , board_bot.position)
-                    # delta_x,delta_y = self.goTo(usPos,self.avoidTeleport(board,nextPos,usPos))
-                    # print("delta_x " , delta_x, "delta_y" , delta_y)
                     delta_x,delta_y = self.goTo(usPos,base)
                     
             else:
