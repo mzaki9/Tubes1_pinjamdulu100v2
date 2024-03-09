@@ -16,36 +16,15 @@
   <p align="center">
     LETS FIND DIAMOND
     <br />
-    <a href="https://github.com/GAIB21/tugas-besar-if2121-logika-komputasional-2023-retractall-tubes"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/mzaki9/Tubes1_pinjamdulu100v2"><strong>Explore the docs »</strong></a>
     ·
-    <a href="https://github.com/GAIB21/tugas-besar-if2121-logika-komputasional-2023-retractall-tubes/issues">Report Bug</a>
+    <a href="https://github.com/mzaki9/Tubes1_pinjamdulu100v2/issues">Report Bug</a>
     <br/>
   </p>
 </div>
 
 
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#HOW TO USE">HOW TO USE</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#Project-Status">Project Status</a></li>
-    <li><a href="#Room-for-Improvement">Room for Improvement</a></li>
-    <li><a href="#Acknowledgments">Acknowledgments</a></li>
-    <li><a href="#Features">Features</a></li>
-  </ol>
-</details>
 
 
 
@@ -58,6 +37,12 @@ mengumpulkan diamond tersebut tidak akan sesederhana itu, tentunya akan terdapat
 berbagai rintangan yang akan membuat permainan ini menjadi lebih seru dan kompleks.
 Untuk memenangkan pertandingan, setiap pemain harus mengimplementasikan strategi
 tertentu pada masing-masing bot-nya
+
+
+## Greedy Algorithm
+
+Singkatnya Greedy yang kami gunakan dalam bot ini adalah mencari diamonds terdekat dengan kita dan juga memprioritaskan diamonds dengan nilai terbesar atau diamond merah, dan juga greedy untuk mencari jarak terdekat ke diamonds ataupun jarak terdekat ke base, dalam hal ini kami membandingkan antara jarak jika melalui portal dan juga jarak apabila tidak melalui portal
+
 
 
 <br/>
