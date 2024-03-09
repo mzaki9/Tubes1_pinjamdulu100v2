@@ -8,7 +8,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-    <img src="./IMG/robot.jpg" height="75%" width="75%"">
+    <img src="./IMG/robot.png" height="75%" width="75%"">
 </div>
 
 <h3 align="center">Etimo Diamond</h3>
@@ -122,13 +122,7 @@ Project status: complete
 <br/>
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<!-- ROOM FOR IMPROVEMENT -->
-## Room for Improvement
-Room for improvement:
-- 
 
-<br/>
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
