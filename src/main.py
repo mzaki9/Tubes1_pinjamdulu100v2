@@ -9,8 +9,8 @@ from game.logic.random import RandomLogic
 from game.util import *
 from game.logic.base import BaseLogic
 from game.logic.wow import MyBot
-from game.logic.killer import KillerBot
-from game.logic.trollbot import TrollBot
+from game.logic.wowtes import MyBot2
+
 
 
 init()
@@ -19,8 +19,7 @@ DEFAULT_BOARD_ID = 1
 CONTROLLERS = {
     "Random": RandomLogic,
     "MyBot" : MyBot,
-    "KillerBot" : KillerBot,
-    "TrollBot" : TrollBot,
+    "MyBot2" : MyBot2,
 }
 
 ###############################################################################
