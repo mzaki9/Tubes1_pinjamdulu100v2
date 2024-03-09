@@ -177,31 +177,8 @@ class MyBot(BaseLogic):
             else:
                 return mePosition
 
-    
-    def avoidTeleport(self,board:Board,position : Position,currentPos:Position):
-        temp = []
-        print("debug tp")
-        print("Next Pos " , position)
-        for i in range(len(board.game_objects)):
-            if(board.game_objects[i].type == "TeleportGameObject"):
-                temp.append(board.game_objects[i])
 
-
-        direction = self.checkSurrounding(position,currentPos,board)
-        if (direction == "West"):
-            return (currentPos.x ,currentPos.y + 1)
-        elif (direction == "East"):
-            return (currentPos.x ,currentPos.y + 1)
-        elif (direction == "North"):
-            return (currentPos.x + 1 ,currentPos.y)
-        elif (direction == "South"):
-            return (currentPos.x - 1 ,currentPos.y)
-        else:
-            print("Mau ke " ,position)
-            return position
-        
-
-            
+          
     def next_move(self, board_bot: GameObject, board: Board):
      
         usPos = board_bot.position
@@ -225,7 +202,7 @@ class MyBot(BaseLogic):
 
             delta_x,delta_y = self.goTo(usPos,positionButton)
         
-        if (time >= 15):
+        elif (time >= 15):
             if(board_bot.properties.diamonds == 5):
                 print("Balik ke base (5)")
                 if(self.isHomeWithPortal(board,board_bot)and usPos!=tPos1):
